@@ -17,9 +17,13 @@ trace_provider = TracerProvider(resource=resource)
 trace.set_tracer_provider(trace_provider)
 
 # Configure Jaeger exporter using HTTP collector endpoint
-# Jaeger HTTP collector endpoint: http://jaeger:14268/api/traces
+# Allows overriding via JAEGER_ENDPOINT (full URL) or host/port vars for external Jaeger
 jaeger_host = os.getenv("JAEGER_AGENT_HOST", "jaeger")
-jaeger_collector_endpoint = f"http://{jaeger_host}:14268/api/traces"
+jaeger_port = os.getenv("JAEGER_AGENT_PORT", "14268")
+jaeger_collector_endpoint = os.getenv(
+    "JAEGER_ENDPOINT",
+    f"http://{jaeger_host}:{jaeger_port}/api/traces",
+)
 print(f"[service-a] Configuring Jaeger exporter with endpoint: {jaeger_collector_endpoint}")
 jaeger_exporter = JaegerExporter(
     collector_endpoint=jaeger_collector_endpoint,
